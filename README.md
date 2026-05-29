@@ -290,29 +290,41 @@ Upon completion of this project, the developer will have demonstrated experience
 
 ---
 
-# Current Development Status
+# Project Roadmap
 
-## Phase 1 – Foundation (In Progress)
+## Phase 1: Foundation
+- Event Ingestion Service
+- Alert Service
+- PostgreSQL
+- Docker Compose
 
-### Objectives
+## Phase 2: Event Streaming
+- Kafka
+- Async Processing
 
-- Build Event Ingestion Service
-- Build Alert Service
-- Implement PostgreSQL persistence
-- Containerize services using Docker Compose
-- Establish project structure and documentation
+## Phase 3: Authentication
+- Keycloak
+- JWT
+- RBAC
 
-### Planned Deliverables
+## Phase 4: Observability
+- OpenTelemetry
+- Prometheus
+- Grafana
+- Jaeger
 
-- REST API endpoints for event submission
-- Alert generation functionality
-- Database schema and migrations
-- Containerized development environment
-- Initial integration tests
+## Phase 5: DevSecOps
+- GitHub Actions
+- Semgrep
+- Trivy
 
-### Current Status
+## Phase 6: Kubernetes
+- Deployments
+- Services
+- Ingress
 
-🚧 Under Development
+## Phase 7: Infrastructure as Code
+- Terraform
 
 # Author
 
