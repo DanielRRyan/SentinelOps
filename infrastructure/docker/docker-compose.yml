@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: sentinelops-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sentinelops
+      POSTGRES_USER: sentinelops_user
+      POSTGRES_PASSWORD: sentinelops_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - sentinelops_postgres_data:/var/lib/postgresql/data
+      - ../../database/schemas/phase1-init.sql:/docker-entrypoint-initdb.d/phase1-init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sentinelops_user -d sentinelops"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sentinelops-network
+
+  event-ingestion-service:
+    build:
+      context: ../../services/event-ingestion-service
+      dockerfile: Dockerfile
+    container_name: sentinelops-event-ingestion-service
+    restart: unless-stopped
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: sentinelops
+      DATABASE_USER: sentinelops_user
+      DATABASE_PASSWORD: sentinelops_password
+    ports:
+      - "8001:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - sentinelops-network
+
+  alert-service:
+    build:
+      context: ../../services/alert-service
+      dockerfile: Dockerfile
+    container_name: sentinelops-alert-service
+    restart: unless-stopped
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: sentinelops
+      DATABASE_USER: sentinelops_user
+      DATABASE_PASSWORD: sentinelops_password
+    ports:
+      - "8002:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - sentinelops-network
+
+volumes:
+  sentinelops_postgres_data:
+
+networks:
+  sentinelops-network:
+    driver: bridge
